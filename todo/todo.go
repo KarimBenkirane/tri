@@ -3,11 +3,13 @@ package todo
 import (
 	"encoding/json"
 	"os"
+	"strconv"
 )
 
 type Item struct {
 	Text     string
 	Priority int
+	position int
 }
 
 func SaveItems(filename string, items []Item) error {
@@ -31,6 +33,9 @@ func ReadItems(filename string) ([]Item, error) {
 	if err := json.Unmarshal(b, &items); err != nil {
 		return []Item{}, err
 	}
+	for i := range items {
+		items[i].position = i + 1
+	}
 	return items, nil
 }
 
@@ -53,4 +58,8 @@ func (i *Item) PrettyP() string {
 		return "(3)"
 	}
 	return " "
+}
+
+func (i *Item) Label() string {
+	return strconv.Itoa(i.position) + "."
 }
