@@ -4,7 +4,7 @@ Copyright © 2026 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/KarimBenkirane/tri/todo"
 	"github.com/spf13/cobra"
@@ -24,14 +24,15 @@ to quickly create a Cobra application.`,
 }
 
 func addRun(cmd *cobra.Command, args []string) {
-	items := []todo.Item{}
+	items, err := todo.ReadItems(dataFile)
+	if err != nil {
+		log.Printf("%v", err)
+	}
 	for _, x := range args {
 		items = append(items, todo.Item{Text: x})
 	}
-	err := todo.SaveItems(".tridos.json", items)
-	if err != nil {
-		fmt.Errorf("%v", err)
-	}
+	err = todo.SaveItems(dataFile, items)
+
 }
 
 func init() {
