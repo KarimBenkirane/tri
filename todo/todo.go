@@ -75,3 +75,10 @@ func (i *Item) PrettyP() string {
 func (i *Item) Label() string {
 	return strconv.Itoa(i.position) + "."
 }
+
+func (i *Item) PrettyDone() string {
+	if i.Done {
+		return "X"
+	}
+	return ""
+}
