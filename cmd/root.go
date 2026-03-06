@@ -1,5 +1,5 @@
 /*
-Copyright © 2026 Karim Benkirane
+Copyright © 2026 Karim Benkirane <benkiranemedkarim@gmail.com>
 */
 package cmd
 
