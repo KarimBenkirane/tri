@@ -4,14 +4,17 @@ Copyright © 2026 Karim Benkirane <benkiranemedkarim@gmail.com>
 package cmd
 
 import (
+	"fmt"
 	"log"
 	"os"
 
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var dataFile string
+var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -38,6 +41,7 @@ func Execute() {
 }
 
 func init() {
+	cobra.OnInitialize(initConfig)
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
@@ -48,7 +52,25 @@ func init() {
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.tri.yaml)")
 	rootCmd.PersistentFlags().StringVar(&dataFile, "datafile", home+string(os.PathSeparator)+".tridos.json", "data file to store todos")
 
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.tri.yaml)")
+
+	viper.BindPFlag("datafile", rootCmd.PersistentFlags().Lookup("datafile")) // Bind the flag to Viper
+
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func initConfig() {
+	viper.SetConfigName(".tri")
+	home, err := os.UserHomeDir()
+	cobra.CheckErr(err)
+	viper.AddConfigPath(home)
+	viper.AutomaticEnv()
+	viper.SetEnvPrefix("tri")
+
+	// If a config file is found, read it in.
+	if err := viper.ReadInConfig(); err == nil {
+		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	}
 }

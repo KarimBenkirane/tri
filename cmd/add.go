@@ -8,6 +8,7 @@ import (
 
 	"github.com/KarimBenkirane/tri/todo"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var priority int
@@ -26,7 +27,7 @@ to quickly create a Cobra application.`,
 }
 
 func addRun(cmd *cobra.Command, args []string) {
-	items, err := todo.ReadItems(dataFile)
+	items, err := todo.ReadItems(viper.GetString("datafile"))
 	if err != nil {
 		log.Printf("%v", err)
 	}
@@ -35,7 +36,7 @@ func addRun(cmd *cobra.Command, args []string) {
 		item.SetPriority(priority)
 		items = append(items, item)
 	}
-	err = todo.SaveItems(dataFile, items)
+	err = todo.SaveItems(viper.GetString("datafile"), items)
 
 }
 
